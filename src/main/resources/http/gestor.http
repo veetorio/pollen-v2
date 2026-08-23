@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:8080
+@colaboradorId = 1
+@teamId = d0814d90-70ce-45ad-a64e-cd0a11fa4af7"
+@projetoId = 1
+
+### Listar colaboradores
+GET {{baseUrl}}/colaboradores
+
+###
+
+### Buscar colaborador
+GET {{baseUrl}}/colaboradores/{{colaboradorId}}
+
+###
+
+### Adicionar colaborador à Team
+POST {{baseUrl}}/teams/{{teamId}}/colaboradores/{{colaboradorId}}
+
+###
+
+### Remover colaborador da Team
+DELETE {{baseUrl}}/teams/{{teamId}}/colaboradores/{{colaboradorId}}
+
+###
+
+### Adicionar colaborador como responsável
+POST {{baseUrl}}/projetos/{{projetoId}}/responsaveis/{{colaboradorId}}

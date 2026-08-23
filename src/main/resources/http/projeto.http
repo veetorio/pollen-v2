@@ -1,0 +1,49 @@
+@baseUrl = http://localhost:8080
+@projetoId = 1
+@teamId =17725ede-ffd9-4167-bcd9-98f339e9cbc9
+@colaboradorId = 2d6b685e-a127-4f54-864a-79afa807add8
+
+### Listar projetos
+GET {{baseUrl}}/teams/{{teamId}}/projetos
+
+###
+
+### Buscar projeto
+GET {{baseUrl}}/projetos/{{projetoId}}
+
+###
+
+### Criar projeto
+POST {{baseUrl}}/teams/{{teamId}}/projetos
+Content-Type: application/json
+
+{
+  "nome": "Sistema Pollen",
+  "classificacao": "PUBLICA",
+  "descricao": "Plataforma de acompanhamento de projetos"
+}
+
+###
+
+### Atualizar projeto
+PUT {{baseUrl}}/projetos/{{projetoId}}
+Content-Type: application/json
+
+{
+  "nome": "Sistema Pollen Atualizado"
+}
+
+PUT {{baseUrl}}/projetos/{{projetoId}}
+
+### Adicionar responsável
+POST {{baseUrl}}/projetos/{{projetoId}}/responsaveis/{{colaboradorId}}
+
+###
+
+### Remover responsável
+DELETE {{baseUrl}}/projetos/{{projetoId}}/responsaveis/{{colaboradorId}}
+
+###
+
+### Deletar projeto
+DELETE {{baseUrl}}/projetos/{{projetoId}}

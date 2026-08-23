@@ -1,0 +1,25 @@
+@baseUrl = http://localhost:8080
+@gestorId = 0fde5b76-bd15-49df-9fbb-c714a6902808
+@teamId = 17725ede-ffd9-4167-bcd9-98f339e9cbc9
+
+
+
+
+### Criar Team
+POST {{baseUrl}}/teams
+Content-Type: application/json
+
+{
+  "nome": "Equipe de Desenvolvimento",
+  "descricao": "Equipe responsável pelo desenvolvimento",
+  "classificacao": "PUBLICA",
+  "gestorId": "{{gestorId}}"
+}
+
+
+### Buscar Teams do gestor
+GET {{baseUrl}}/teams
+
+
+### adicionar colaborador à Team
+PATCH {{baseUrl}}/teams?teamId={{teamId}}&colaboradorId=d05b2837-5711-4cec-9e0f-8ee33ebdff1e

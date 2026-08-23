@@ -1,0 +1,45 @@
+@baseUrl = http://localhost:8080
+@colaboradorId = d05b2837-5711-4cec-9e0f-8ee33ebdff1e
+@GestorId = 0fde5b76-bd15-49df-9fbb-c714a6902808
+### Criar Colaborador
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Ettore Vitorio",
+  "senha": "123456",
+  "contato": {
+    "email": "ettore@email.com",
+    "telefone": "98999999999"
+  },
+  "tipo": "COLABORADOR"
+}
+
+
+### Criar Gestor
+POST {{baseUrl}}/usuarios
+Content-Type: application/json
+
+{
+  "nome": "Ana Vitoria",
+  "senha": "123456",
+  
+  "contato": {
+    "email": "ana@email.com",
+    "telefone": "98 9203-4567"
+  },
+  "tipo": "GESTOR"
+}
+###
+
+### Buscar colaborador
+GET {{baseUrl}}/usuarios
+
+### Logar
+POST {{baseUrl}}/usuarios/login
+Content-Type: application/json
+
+{
+  "email": "ana@email.com",
+  "senha": "123456"
+}

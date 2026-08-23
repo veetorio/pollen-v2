@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:8080
+@tarefaId = 1
+@projetoId = 012c6503-eaa3-4b58-94ec-bf6f60b146fc
+@subtarefaId = 2
+
+### Listar tarefas
+GET {{baseUrl}}/projetos/{{projetoId}}/tarefas
+
+###
+
+### Buscar tarefa
+GET {{baseUrl}}/tarefas/{{tarefaId}}
+
+###
+
+### Criar tarefa
+POST {{baseUrl}}/projetos/{{projetoId}}/tarefas
+Content-Type: application/json
+
+{
+  "titulo": "Desenvolver API",
+  "prazoInicio": "2026-08-23T12:39:01.399Z",
+  "prazoFim": "2026-08-23T12:39:01.399Z"
+}
+
+###
+
+### Atualizar tarefa
+PATCH {{baseUrl}}/tarefas/{{tarefaId}}
+Content-Type: application/json
+
+{
+  "titulo": "Desenvolver API Atualizada"
+}
+
+###
+
+### Criar subtarefa
+POST {{baseUrl}}/projetos/{{projetoId}}/tarefas
+Content-Type: application/json
+{
+  "titulo": "string",
+  "prazoInicio": "2026-08-23T12:39:01.399Z",
+  "prazoFim": "2026-08-23T12:39:01.399Z"
+}
+###
+
+### Buscar subtarefa
+GET {{baseUrl}}/tarefas/{{subtarefaId}}
+
+###
+
+### Deletar tarefa
+DELETE {{baseUrl}}/tarefas/{{tarefaId}}
