@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -33,24 +34,28 @@ class TeamController {
     private final TeamService teamService;
 
     @PostMapping
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Criar colmeia")
     ResponseEntity<TeamResponse> criar(@Valid @RequestBody CriarTeamRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(teamService.criar(request));
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Listar todas as colmeias")
     ResponseEntity<List<TeamResponse>> listar() {
         return ResponseEntity.ok(teamService.listar());
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Consultar colmeia por ID")
     ResponseEntity<TeamResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(teamService.buscarPorId(id));
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Atualizar colmeia")
     ResponseEntity<TeamResponse> atualizar(
             @PathVariable UUID id,
@@ -59,6 +64,7 @@ class TeamController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Excluir colmeia")
     ResponseEntity<Void> excluir(@PathVariable UUID id) {
         teamService.excluir(id);
@@ -66,6 +72,7 @@ class TeamController {
     }
 
     @PatchMapping
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Adicionar colaborador à colmeia")
     ResponseEntity<TeamResponse> adicionarColaborador(
             @RequestParam UUID teamId,
@@ -74,6 +81,7 @@ class TeamController {
     }
 
     @DeleteMapping("/{id}/colaboradores/{colaboradorId}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Remover colaborador da colmeia")
     ResponseEntity<TeamResponse> removerColaborador(
             @PathVariable UUID id,

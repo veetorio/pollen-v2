@@ -14,5 +14,22 @@ public record UsuarioResponse(
         Boolean atividade,
         ContatoDTO contato,
         LocalDate criadoEm,
-        LocalDate atualizadoEm
-) {}
+        LocalDate atualizadoEm,
+        TokenOutput acessToken
+) { 
+   public UsuarioResponse withAcessToken(TokenOutput tokenOutput) {
+        return new UsuarioResponse(
+                this.matricula,
+                this.nome,
+                this.tipo,
+                this.setor,
+                this.atividade,
+                this.contato,
+                this.criadoEm,
+                this.atualizadoEm,
+                tokenOutput
+        );
+    } 
+
+}
+

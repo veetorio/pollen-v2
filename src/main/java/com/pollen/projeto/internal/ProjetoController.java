@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,6 +33,7 @@ class ProjetoController {
     // --- Criação e listagem via colmeia ---
 
     @PostMapping("/teams/{teamId}/projetos")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Criar projeto em uma colmeia")
     ResponseEntity<ProjetoResponse> criar(
             @PathVariable UUID teamId,
@@ -41,6 +43,7 @@ class ProjetoController {
     }
 
     @GetMapping("/teams/{teamId}/projetos")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Listar projetos de uma colmeia")
     ResponseEntity<List<ProjetoResponse>> listarPorTeam(@PathVariable UUID teamId) {
         return ResponseEntity.ok(projetoService.listarPorTeam(teamId));
@@ -49,12 +52,14 @@ class ProjetoController {
     // --- CRUD direto por projeto ---
 
     @GetMapping("/projetos/{id}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Consultar projeto por ID")
     ResponseEntity<ProjetoResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(projetoService.buscarPorId(id));
     }
 
     @PutMapping("/projetos/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Atualizar projeto")
     ResponseEntity<ProjetoResponse> atualizar(
             @PathVariable UUID id,
@@ -63,6 +68,7 @@ class ProjetoController {
     }
 
     @DeleteMapping("/projetos/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Excluir projeto")
     ResponseEntity<Void> excluir(@PathVariable UUID id) {
         projetoService.excluir(id);
@@ -70,6 +76,7 @@ class ProjetoController {
     }
 
     @PostMapping("/projetos/{id}/responsaveis")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Associar responsáveis ao projeto")
     ResponseEntity<ProjetoResponse> associarResponsaveis(
             @PathVariable UUID id,

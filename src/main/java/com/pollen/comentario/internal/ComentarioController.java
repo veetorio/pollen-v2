@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -28,6 +29,7 @@ class ComentarioController {
     private final ComentarioService comentarioService;
 
     @PostMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Adicionar comentário ao projeto (RF33)")
     ResponseEntity<ComentarioResponse> criar(
             @PathVariable UUID projetoId,
@@ -37,6 +39,7 @@ class ComentarioController {
     }
 
     @GetMapping
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Listar comentários do projeto (RF34)")
     ResponseEntity<List<ComentarioResponse>> listar(@PathVariable UUID projetoId) {
         return ResponseEntity.ok(comentarioService.listarPorProjeto(projetoId));

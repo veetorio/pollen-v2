@@ -9,9 +9,12 @@ import com.pollen.usuario.internal.UsuarioRepository;
 import com.pollen.usuario.internal.dto.AtualizarUsuarioRequest;
 import com.pollen.usuario.internal.dto.CriarUsuarioRequest;
 import com.pollen.usuario.internal.dto.LoginDto;
+import com.pollen.usuario.internal.dto.TokenOutput;
 import com.pollen.usuario.internal.dto.UsuarioResponse;
 import com.pollen.usuario.internal.mapper.UsuarioMapper;
 import lombok.RequiredArgsConstructor;
+
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,15 +33,17 @@ public class UsuarioService {
     private final ColaboradorRepository colaboradorRepository;
     private final GestorRepository gestorRepository;
     private final UsuarioMapper usuarioMapper;
-
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
 
     @Transactional
     public UsuarioResponse criar(CriarUsuarioRequest request) {
+        String senhaCriptografada = passwordEncoder.encode(request.senha());
         Usuario usuario = switch (request.tipo()) {
             case "ADMINISTRADOR" -> Administrador.builder()
                     .nome(request.nome())
-                    .senha(request.senha())
+                    .senha(senhaCriptografada)
                     .atividade(true)
                     .contato(request.contato() != null
                             ? usuarioMapper.toContato(request.contato())
@@ -47,7 +52,7 @@ public class UsuarioService {
 
             case "GESTOR" -> Gestor.builder()
                     .nome(request.nome())
-                    .senha(request.senha())
+                    .senha(senhaCriptografada)
                     .atividade(true)
                     .contato(request.contato() != null
                             ? usuarioMapper.toContato(request.contato())
@@ -56,7 +61,7 @@ public class UsuarioService {
 
             case "COLABORADOR" -> Colaborador.builder()
                     .nome(request.nome())
-                    .senha(request.senha())
+                    .senha(senhaCriptografada)
                     .atividade(true)
                     .setor(request.setor())
                     .contato(request.contato() != null
@@ -79,13 +84,30 @@ public class UsuarioService {
                 .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException(
                         "Usuário não encontrado com email: " + request.email()));
         
-        if (!usuario.getSenha().equals(request.senha())) {
-            throw new IllegalArgumentException("Senha incorreta para o usuário com email: " + request.email());
+        if(isBcryptHash(usuario.getSenha())) {
+            if (!passwordEncoder.matches(request.senha(), usuario.getSenha())) {
+                throw new IllegalArgumentException("Senha incorreta para o usuário com email: " + request.email());
+            }
+        } else {
+            if (!usuario.getSenha().equals(request.senha())) {
+                throw new IllegalArgumentException("Senha incorreta para o usuário com email: " + request.email());
+            }
+            String senhaCriptografada = passwordEncoder.encode(request.senha());
+            usuario.setSenha(senhaCriptografada);
+            usuarioRepository.save(usuario);
         }
 
-        return usuarioMapper.toResponse(usuario);
+        
+        UsuarioResponse response = usuarioMapper.toResponse(usuario);
+        TokenOutput tokenOutput = tokenService.generateToken(response);
+        response = response.withAcessToken(tokenOutput);
+
+        return response;
     }
 
+    private boolean isBcryptHash(String senha) {
+        return senha != null && senha.matches("^\\$2[aby]\\$\\d{2}\\$.{53}$");
+    }
     /**
      * Lista todos os usuários cadastrados.
      * RF02 — Consulta de usuários.

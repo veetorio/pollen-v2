@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,6 +32,7 @@ class TarefaController {
     private final TarefaService tarefaService;
 
     @PostMapping("/projetos/{projetoId}/tarefas")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR') or hasAuthority('COLABORADOR')")
     @Operation(summary = "Criar tarefa em um projeto")
     ResponseEntity<TarefaResponse> criar(
             @PathVariable UUID projetoId,
@@ -40,18 +42,21 @@ class TarefaController {
     }
 
     @GetMapping("/projetos/{projetoId}/tarefas")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Listar tarefas de um projeto")
     ResponseEntity<List<TarefaResponse>> listarPorProjeto(@PathVariable UUID projetoId) {
         return ResponseEntity.ok(tarefaService.listarPorProjeto(projetoId));
     }
 
     @GetMapping("/tarefas/{id}")
+    @PreAuthorize("isAuthenticated()")
     @Operation(summary = "Consultar tarefa por ID")
     ResponseEntity<TarefaResponse> buscarPorId(@PathVariable UUID id) {
         return ResponseEntity.ok(tarefaService.buscarPorId(id));
     }
 
     @PutMapping("/tarefas/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR') or hasAuthority('COLABORADOR')")
     @Operation(summary = "Atualizar tarefa")
     ResponseEntity<TarefaResponse> atualizar(
             @PathVariable UUID id,
@@ -60,6 +65,7 @@ class TarefaController {
     }
 
     @PatchMapping("/tarefas/{id}/status")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR') or hasAuthority('COLABORADOR')")
     @Operation(summary = "Atualizar status da tarefa (RN17)")
     ResponseEntity<TarefaResponse> atualizarStatus(
             @PathVariable UUID id,
@@ -68,6 +74,7 @@ class TarefaController {
     }
 
     @PostMapping("/tarefas/{id}/subtarefas")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR') or hasAuthority('COLABORADOR')")
     @Operation(summary = "Criar subtarefa (RN28)")
     ResponseEntity<TarefaResponse> criarSubtarefa(
             @PathVariable UUID id,
@@ -77,6 +84,7 @@ class TarefaController {
     }
 
     @DeleteMapping("/tarefas/{id}")
+    @PreAuthorize("hasAuthority('GESTOR') or hasAuthority('ADMINISTRADOR')")
     @Operation(summary = "Excluir tarefa")
     ResponseEntity<Void> excluir(@PathVariable UUID id) {
         tarefaService.excluir(id);
